@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Dashboard — ServiceConnect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="navbar" id="navbar"></header>
+
+<section class="section container">
+  <h2 class="section-title">My Bookings</h2>
+  <div class="tab-bar" id="tabBar">
+    <button class="tab-btn active" data-filter="all">All</button>
+    <button class="tab-btn" data-filter="requested">Requested</button>
+    <button class="tab-btn" data-filter="accepted">Accepted</button>
+    <button class="tab-btn" data-filter="in_progress">In Progress</button>
+    <button class="tab-btn" data-filter="completed">Completed</button>
+    <button class="tab-btn" data-filter="cancelled">Cancelled</button>
+  </div>
+  <div id="bookingsList"><p class="text-muted">Loading…</p></div>
+</section>
+
+<!-- Review modal (simple inline card, shown/hidden via JS) -->
+<div id="reviewModalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); align-items:center; justify-content:center; z-index:100;">
+  <div class="card" style="max-width:420px;">
+    <h3>Rate your experience</h3>
+    <div class="form-group">
+      <label>Rating</label>
+      <select id="reviewRating">
+        <option value="5">★★★★★ Excellent</option>
+        <option value="4">★★★★☆ Good</option>
+        <option value="3">★★★☆☆ Okay</option>
+        <option value="2">★★☆☆☆ Poor</option>
+        <option value="1">★☆☆☆☆ Very Poor</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Comment</label>
+      <textarea id="reviewComment" rows="3" placeholder="How was the service?"></textarea>
+    </div>
+    <div class="flex" style="gap:8px;">
+      <button class="btn btn-outline" id="cancelReviewBtn" style="flex:1;">Cancel</button>
+      <button class="btn btn-accent" id="submitReviewBtn" style="flex:1;">Submit</button>
+    </div>
+    <p class="error-text" id="reviewError"></p>
+  </div>
+</div>
+
+<footer>ServiceConnect — local services marketplace MVP.</footer>
+
+<script src="js/api.js"></script>
+<script src="js/dashboard-customer.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Search Providers — ServiceConnect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="navbar" id="navbar"></header>
+
+<section class="section container">
+  <form class="search-card" id="filterForm" style="margin-top:0;">
+    <div class="field">
+      <label for="categorySelect">Category</label>
+      <select id="categorySelect"><option value="">All categories</option></select>
+    </div>
+    <div class="field">
+      <label for="subcategorySelect">Service</label>
+      <select id="subcategorySelect"><option value="">Any service</option></select>
+    </div>
+    <div class="field">
+      <label for="cityInput">City / Area</label>
+      <input type="text" id="cityInput" placeholder="e.g. Noida" />
+    </div>
+    <button type="submit" class="btn btn-primary" style="align-self:end;">Filter</button>
+  </form>
+
+  <div class="flex items-center justify-between mt-3">
+    <h2 class="section-title" id="resultsHeading">Providers</h2>
+    <button class="btn btn-outline" id="useLocationBtn" type="button">📍 Use my current location</button>
+  </div>
+
+  <div class="provider-list" id="providerList">
+    <p class="text-muted">Loading…</p>
+  </div>
+</section>
+
+<footer>ServiceConnect — local services marketplace MVP.</footer>
+
+<script src="js/api.js"></script>
+<script src="js/search.js"></script>
+</body>
+</html>

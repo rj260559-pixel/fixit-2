@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ServiceConnect — Trusted Local Service Providers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="navbar" id="navbar"></header>
+
+<section class="hero">
+  <div class="container">
+    <h1>Find trusted service providers near you</h1>
+    <p>Plumbers, electricians, AC repair, cleaning and 16 more — verified professionals, booked in minutes.</p>
+  </div>
+  <div class="container">
+    <form class="search-card" id="homeSearchForm">
+      <div class="field">
+        <label for="categorySelect">What do you need?</label>
+        <select id="categorySelect" required>
+          <option value="">Select a service</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="locationInput">Where?</label>
+        <input type="text" id="locationInput" placeholder="City, area or pincode" />
+      </div>
+      <button type="submit" class="btn btn-accent" style="align-self:end;">Search</button>
+    </form>
+  </div>
+</section>
+
+<section class="section container">
+  <h2 class="section-title">Browse all categories</h2>
+  <div class="category-grid" id="categoryGrid">
+    <p class="text-muted">Loading categories…</p>
+  </div>
+</section>
+
+<footer>
+  ServiceConnect — local services marketplace MVP. Built with the customer → category → search → provider → booking → review flow.
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

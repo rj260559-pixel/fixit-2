@@ -1,0 +1,22 @@
+module.exports = [
+  { name: 'Plumber', nameHi: 'प्लंबर', icon: '🚰', subcategories: ['Pipe Repair', 'Tap Repair', 'Bathroom Plumbing', 'Kitchen Plumbing', 'Water Tank Installation', 'Drain Cleaning', 'Leakage Repair'] },
+  { name: 'Electrician', nameHi: 'इलेक्ट्रीशियन', icon: '💡', subcategories: ['Wiring', 'Switch & Socket Repair', 'Fan Installation', 'MCB / Fuse Repair', 'Inverter Installation', 'Light Fitting'] },
+  { name: 'Painter', nameHi: 'पेंटर', icon: '🎨', subcategories: ['Interior Painting', 'Exterior Painting', 'Wall Texture', 'Waterproof Painting', 'Wood Polish'] },
+  { name: 'Vehicle Repair', nameHi: 'वाहन मरम्मत', icon: '🚗', subcategories: ['Car Repair', 'Bike Repair', 'Car Wash', 'Puncture Repair', 'Battery Service'] },
+  { name: 'Carpenter', nameHi: 'बढ़ई', icon: '🪚', subcategories: ['Furniture Repair', 'Door & Window Repair', 'Modular Kitchen', 'Wardrobe Installation', 'Custom Furniture'] },
+  { name: 'Cleaning', nameHi: 'सफाई', icon: '🧹', subcategories: ['Home Cleaning', 'Sofa Cleaning', 'Bathroom Cleaning', 'Kitchen Cleaning', 'Office Cleaning', 'Water Tank Cleaning'] },
+  { name: 'AC Repair', nameHi: 'एसी मरम्मत', icon: '❄️', subcategories: ['AC Servicing', 'AC Installation', 'AC Uninstallation', 'Gas Filling', 'AC Repair', 'Window AC Repair'] },
+  { name: 'Pest Control', nameHi: 'कीट नियंत्रण', icon: '🐜', subcategories: ['General Pest Control', 'Termite Control', 'Cockroach Control', 'Mosquito Control', 'Rodent Control'] },
+  { name: 'Gardening', nameHi: 'बागवानी', icon: '🌱', subcategories: ['Lawn Mowing', 'Plant Care', 'Landscaping', 'Tree Trimming', 'Garden Setup'] },
+  { name: 'Appliance Repair', nameHi: 'उपकरण मरम्मत', icon: '🔌', subcategories: ['Washing Machine Repair', 'Refrigerator Repair', 'Microwave Repair', 'TV Repair', 'Water Purifier Repair'] },
+  { name: 'Locksmith', nameHi: 'ताला बनाने वाला', icon: '🔑', subcategories: ['Lock Installation', 'Lock Repair', 'Key Duplication', 'Emergency Lockout', 'Safe Installation'] },
+  { name: 'Movers', nameHi: 'पैकर्स एंड मूवर्स', icon: '📦', subcategories: ['Home Shifting', 'Office Shifting', 'Packing Service', 'Vehicle Transport', 'Loading & Unloading'] },
+  { name: 'Roofer', nameHi: 'छत मरम्मत', icon: '🏠', subcategories: ['Roof Repair', 'Roof Installation', 'Roof Waterproofing', 'Gutter Cleaning', 'Roof Insulation'] },
+  { name: 'Masonry & Construction', nameHi: 'राजमिस्त्री', icon: '🧱', subcategories: ['Wall Construction', 'Plastering', 'Tile Fixing', 'Concrete Work', 'Renovation'] },
+  { name: 'Flooring', nameHi: 'फ्लोरिंग', icon: '🪵', subcategories: ['Tile Flooring', 'Marble Flooring', 'Wooden Flooring', 'Vinyl Flooring', 'Floor Polishing'] },
+  { name: 'Interior Design', nameHi: 'इंटीरियर डिज़ाइन', icon: '🛋️', subcategories: ['Home Interior', 'Office Interior', 'False Ceiling', 'Modular Furniture Design', 'Space Planning'] },
+  { name: 'Waterproofing', nameHi: 'वॉटरप्रूफिंग', icon: '💧', subcategories: ['Roof Waterproofing', 'Bathroom Waterproofing', 'Wall Waterproofing', 'Basement Waterproofing'] },
+  { name: 'Welding', nameHi: 'वेल्डिंग', icon: '🔥', subcategories: ['Gate & Grill Welding', 'Furniture Welding', 'Structural Welding', 'Fabrication Work'] },
+  { name: 'Solar Installation', nameHi: 'सोलर इंस्टॉलेशन', icon: '☀️', subcategories: ['Solar Panel Installation', 'Solar Water Heater', 'Solar Maintenance', 'Solar Consultation'] },
+  { name: 'Home Security', nameHi: 'होम सिक्योरिटी', icon: '🔒', subcategories: ['CCTV Installation', 'Alarm System', 'Video Door Phone', 'Smart Lock Installation'] }
+];
