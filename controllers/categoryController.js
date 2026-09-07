@@ -10,7 +10,7 @@ const getCategories = async (req, res) => {
 // GET /api/categories/:categoryId/subcategories
 const getSubcategories = async (req, res) => {
   const subcategories = await Subcategory.find({
-    categoryId: req.params.categoryId,
+    category: req.params.categoryId,
     isActive: true
   });
   res.json(subcategories);

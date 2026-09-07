@@ -114,7 +114,8 @@ function renderRequests() {
 function renderServiceTags() {
   const box = document.getElementById('serviceTagsList');
   box.innerHTML = pendingServices.map((s, i) => `
-    <span class="tag">${s.subcategoryName} — ₹${s.price || 0} <a href="#" data-remove="${i}" style="color:var(--color-danger);margin-left:4px;">✕</a></span>
+    
+    <span class="tag">${s.subcategoryName} — ₹${Number(s.price) || 0} <a href="#" data-remove="${i}" style="color:var(--color-danger);margin-left:4px;">✕</a></span>
   `).join('') || '<span class="text-muted">No services added yet.</span>';
 
   box.querySelectorAll('[data-remove]').forEach(link => {
@@ -153,8 +154,9 @@ document.getElementById('addServiceBtn').addEventListener('click', () => {
   renderServiceTags();
 });
 
-function fillProfileForm() {
+async function fillProfileForm() {
   if (!myProvider) return;
+
   document.getElementById('businessName').value = myProvider.businessName || '';
   document.getElementById('about').value = myProvider.about || '';
   document.getElementById('experienceYears').value = myProvider.experienceYears || 0;
@@ -163,19 +165,51 @@ function fillProfileForm() {
   document.getElementById('pincode').value = myProvider.location?.pincode || '';
   document.getElementById('serviceRadiusKm').value = myProvider.location?.serviceRadiusKm || 10;
 
-  pendingServices = (myProvider.services || []).map(s => ({
-    categoryId: s.categoryId?._id || s.categoryId,
-    subcategoryId: s.subcategoryId?._id || s.subcategoryId,
-    subcategoryName: s.subcategoryId?.name || 'Service',
-    price: s.price || 0
-  }));
+  // pendingServices = (myProvider.services || []).map(s => ({
+  //   categoryId: s.categoryId?._id || s.categoryId,
+  //   subcategoryId: s.subcategoryId?._id || s.subcategoryId,
+  //   subcategoryName: s.subcategoryId?.name || 'Service',
+  //   price: s.price || 0
+  // }));
+pendingServices = (myProvider.services || []).map(s => ({
+  categoryId: s.categoryId?._id || s.categoryId,
+  subcategoryId: s.subcategoryId?._id || s.subcategoryId,
+  subcategoryName: s.subcategoryId?.name || 'Service',
+  price: Number(s.price) || 0
+}));
   renderServiceTags();
 
-  document.getElementById('startTime').value = myProvider.availability?.startTime || '09:00';
-  document.getElementById('endTime').value = myProvider.availability?.endTime || '18:00';
-  document.getElementById('isAvailableNow').checked = !!myProvider.availability?.isAvailableNow;
+  // Load saved category and subcategory into dropdowns
+  if (pendingServices.length > 0) {
+    const savedService = pendingServices[0];
+
+    const catSelect = document.getElementById('addCategorySelect');
+    const subSelect = document.getElementById('addSubcategorySelect');
+
+    if (savedService.categoryId) {
+      catSelect.value = savedService.categoryId;
+
+      await loadSubcategoriesForProfile(savedService.categoryId);
+
+      if (savedService.subcategoryId) {
+        subSelect.value = savedService.subcategoryId;
+      }
+    }
+  }
+
+  document.getElementById('startTime').value =
+    myProvider.availability?.startTime || '09:00';
+
+  document.getElementById('endTime').value =
+    myProvider.availability?.endTime || '18:00';
+
+  document.getElementById('isAvailableNow').checked =
+    !!myProvider.availability?.isAvailableNow;
+
   renderWorkingDays(myProvider.availability?.workingDays || []);
 }
+
+  
 
 document.getElementById('useLocationBtn').addEventListener('click', () => {
   if (!navigator.geolocation) return alert('Location not supported.');
@@ -187,11 +221,27 @@ document.getElementById('useLocationBtn').addEventListener('click', () => {
 
 document.getElementById('profileForm').addEventListener('submit', async (e) => {
   e.preventDefault();
+
   const successEl = document.getElementById('profileSuccess');
   const errorEl = document.getElementById('profileError');
   successEl.textContent = '';
   errorEl.textContent = '';
+// UPDATE SERVICE PRICE
+  const catSelect = document.getElementById('addCategorySelect');
+  const subSelect = document.getElementById('addSubcategorySelect');
+  const currentPrice = Number(document.getElementById('addPrice').value) || 0;
 
+  const existingService = pendingServices.find(
+    s => s.categoryId === catSelect.value &&
+         s.subcategoryId === subSelect.value
+  );
+
+  if (existingService) {
+    existingService.price = currentPrice;
+  }
+
+  
+    // aapka existing code...
   try {
     await apiRequest('/providers/me', {
       method: 'PUT',
@@ -223,44 +273,69 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
 });
 
 // ---------- Availability tab ----------
-function renderWorkingDays(selected) {
-  const box = document.getElementById('workingDaysBox');
-  box.innerHTML = WORK_DAYS.map(d => `
-    <label style="font-weight:400;"><input type="checkbox" value="${d}" ${selected.includes(d) ? 'checked' : ''} style="width:auto;" /> ${d}</label>
-  `).join('');
-}
+// function renderWorkingDays(selected) {
+//   const box = document.getElementById('workingDaysBox');
+//   box.innerHTML = WORK_DAYS.map(d => `
+//     <label style="font-weight:400;"><input type="checkbox" value="${d}" ${selected.includes(d) ? 'checked' : ''} style="width:auto;" /> ${d}</label>
+//   `).join('');
+// }
 
-document.getElementById('availabilityForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const checked = Array.from(document.querySelectorAll('#workingDaysBox input:checked')).map(i => i.value);
+// document.getElementById('availabilityForm').addEventListener('submit', async (e) => {
+//   e.preventDefault();
+//   const checked = Array.from(document.querySelectorAll('#workingDaysBox input:checked')).map(i => i.value);
+//   try {
+//     await apiRequest('/providers/me', {
+//       method: 'PUT',
+//       body: JSON.stringify({
+//         availability: {
+//           workingDays: checked,
+//           startTime: document.getElementById('startTime').value,
+//           endTime: document.getElementById('endTime').value,
+//           isAvailableNow: document.getElementById('isAvailableNow').checked
+//         }
+//       })
+//     });
+//     document.getElementById('availSuccess').textContent = 'Availability updated!';
+//     await loadMyProvider();
+//   } catch (err) {
+//     alert(err.message);
+//   }
+// });
+async function loadMyProvider() {
   try {
-    await apiRequest('/providers/me', {
-      method: 'PUT',
-      body: JSON.stringify({
-        availability: {
-          workingDays: checked,
-          startTime: document.getElementById('startTime').value,
-          endTime: document.getElementById('endTime').value,
-          isAvailableNow: document.getElementById('isAvailableNow').checked
-        }
-      })
-    });
-    document.getElementById('availSuccess').textContent = 'Availability updated!';
-    await loadMyProvider();
-  } catch (err) {
-    alert(err.message);
+    myProvider = await apiRequest('/providers/me');
+
+    renderProfileSummary();
+    renderStats();
+
+    try {
+      await fillProfileForm();
+    } catch (err) {
+      console.error('Profile form load error:', err);
+    }
+
+    } catch (err) {
+    console.error('Provider profile load error:', err);
+
+    document.getElementById('profileSummaryCard').innerHTML =
+      `<p class="error-text">Unable to load provider profile.</p>`;
+
+    document.getElementById('statsGrid').innerHTML = '';
   }
-});
+}
 
 // ---------- Loaders ----------
-async function loadMyProvider() {
-  myProvider = await apiRequest('/providers/me');
-  fillProfileForm();
-  renderProfileSummary();
-  renderStats();
-}
+
+
+// ---------- Loaders ----------
 async function loadBookings() {
-  myBookings = await apiRequest('/bookings/my');
+  try {
+    myBookings = await apiRequest('/bookings/my');
+  } catch (err) {
+    console.error('Bookings load error:', err);
+    myBookings = [];
+  }
+
   renderRequests();
   renderStats();
 }

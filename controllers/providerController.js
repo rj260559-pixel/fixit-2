@@ -6,22 +6,45 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[6-9]\d{9}$/;       // Indian 10-digit mobile
 const PINCODE_RE = /^\d{6}$/;          // Indian 6-digit pincode
 
-// GET /api/providers/search?subcategoryId=&lng=&lat=&maxDistanceKm=&city=
+// GET /api/providers/search?categoryId=&subcategoryId=&city=&area=&pincode=&lng=&lat=&maxDistanceKm=
 const searchProviders = async (req, res) => {
   try {
-    const { subcategoryId, lng, lat, maxDistanceKm, city } = req.query;
+    const { categoryId, subcategoryId, city, area, pincode, lng, lat, maxDistanceKm } = req.query;
 
     const query = {
       isLive: true,
       'verification.status': 'approved'
     };
 
+    if (categoryId) {
+      query.$or = [
+        { category: categoryId },
+        { 'services.categoryId': categoryId }
+      ];
+    }
+
     if (subcategoryId) {
       query['services.subcategoryId'] = subcategoryId;
     }
 
+    const locationFilters = [];
     if (city) {
-      query['location.city'] = new RegExp(`^${city}$`, 'i');
+      locationFilters.push({ 'location.city': new RegExp(String(city).trim(), 'i') });
+    }
+    if (area) {
+      locationFilters.push({ 'location.area': new RegExp(String(area).trim(), 'i') });
+    }
+    if (pincode) {
+      locationFilters.push({ 'location.pincode': new RegExp(`^${String(pincode).trim()}$`) });
+    }
+
+    if (locationFilters.length > 0) {
+      if (query.$or) {
+        query.$and = [{ $or: query.$or }, { $or: locationFilters }];
+        delete query.$or;
+      } else {
+        query.$or = locationFilters;
+      }
     }
 
     // Geo search takes priority when coordinates are given
@@ -36,8 +59,9 @@ const searchProviders = async (req, res) => {
 
     const providers = await Provider.find(query)
       .populate('userId', 'name')
-      .populate('services.subcategoryId', 'name')
+      .populate('category', 'name icon')
       .populate('services.categoryId', 'name icon')
+      .populate('services.subcategoryId', 'name')
       .limit(50);
 
     res.json(providers);
