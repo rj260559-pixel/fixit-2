@@ -21,15 +21,33 @@
 
   <div class="dash-grid" id="statsGrid"></div>
 
-  <div class="tab-bar">
+  <!-- <div class="tab-bar">
     <button class="tab-btn active" data-tab="requests">Requests</button>
     <button class="tab-btn" data-tab="profile">My Profile & Services</button>
     <button class="tab-btn" data-tab="availability">Availability</button>
-  </div>
-
+  </div> -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="requests">Requests</button>
+  <button class="tab-btn" data-tab="profile">My Profile & Services</button>
+  <button class="tab-btn" data-tab="availability">Availability</button>
+  <button class="tab-btn" data-tab="reviews">Reviews</button>
+</div>
   <div id="tab-requests"><p class="text-muted">Loading…</p></div>
+  
 
-  <div id="tab-profile" style="display:none;">
+<div id="tab-reviews" style="display:none;">
+  <div class="card">
+    <h3>Customer Reviews</h3>
+
+    <div id="providerReviews">
+      <p class="text-muted">Loading reviews...</p>
+    </div>
+  </div>
+</div>
+
+<div id="tab-profile" style="display:none;">
+
+  
     <div class="card">
       <h3>Business Profile</h3>
       <form id="profileForm">

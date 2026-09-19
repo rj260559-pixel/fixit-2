@@ -1,6 +1,7 @@
 const Booking = require('../models/Booking');
 const Customer = require('../models/Customer');
 const Provider = require('../models/Provider');
+const Review = require('../models/Review');
 
 // POST /api/bookings  (customer creates a service request)
 const createBooking = async (req, res) => {
@@ -30,11 +31,30 @@ const getMyBookings = async (req, res) => {
   try {
     if (req.user.role === 'customer') {
       const customer = await Customer.findOne({ userId: req.user._id });
+      // const bookings = await Booking.find({ customerId: customer._id })
+      //   .populate({ path: 'providerId', populate: { path: 'userId', select: 'name' } })
+      //   .populate('subcategoryId', 'name')
+      //   .sort('-createdAt');
+      // return res.json(bookings);
       const bookings = await Booking.find({ customerId: customer._id })
-        .populate({ path: 'providerId', populate: { path: 'userId', select: 'name' } })
-        .populate('subcategoryId', 'name')
-        .sort('-createdAt');
-      return res.json(bookings);
+  .populate({ path: 'providerId', populate: { path: 'userId', select: 'name' } })
+  .populate('subcategoryId', 'name')
+  .sort('-createdAt');
+
+const bookingsWithReview = await Promise.all(
+  bookings.map(async (booking) => {
+    const hasReview = await Review.exists({
+      bookingId: booking._id
+    });
+
+    return {
+      ...booking.toObject(),
+      hasReview: !!hasReview
+    };
+  })
+);
+
+return res.json(bookingsWithReview);
     }
 
     if (req.user.role === 'provider') {

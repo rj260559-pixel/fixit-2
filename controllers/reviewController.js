@@ -13,6 +13,15 @@ const createReview = async (req, res) => {
     if (booking.status !== 'completed') {
       return res.status(400).json({ message: 'You can only review a completed booking' });
     }
+    const existingReview = await Review.findOne({
+  bookingId: booking._id
+});
+
+if (existingReview) {
+  return res.status(400).json({
+    message: 'You have already reviewed this booking'
+  });
+}
 
     const review = await Review.create({
       bookingId: booking._id,

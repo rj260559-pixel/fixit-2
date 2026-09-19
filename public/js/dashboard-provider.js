@@ -11,7 +11,8 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    ['requests', 'profile', 'availability'].forEach(t => {
+    // ['requests', 'profile', 'availability'].forEach(t => {
+      ['requests', 'profile', 'availability', 'reviews'].forEach(t => {
       document.getElementById(`tab-${t}`).style.display = t === btn.dataset.tab ? 'block' : 'none';
     });
   });
@@ -328,6 +329,48 @@ async function loadMyProvider() {
 
 
 // ---------- Loaders ----------
+async function loadProviderReviews() {
+  const el = document.getElementById('providerReviews');
+
+  try {
+    const reviews = await apiRequest(`/reviews/provider/${myProvider._id}`);
+
+    console.log('Provider reviews:', reviews);
+
+    if (!reviews || reviews.length === 0) {
+      el.innerHTML = `<p class="text-muted">No customer reviews yet.</p>`;
+      return;
+    }
+
+    el.innerHTML = reviews.map(review => {
+      const customerName = review.customerId?.userId?.name || 'Customer';
+
+      const stars =
+        '★'.repeat(review.rating) +
+        '☆'.repeat(5 - review.rating);
+
+      return `
+        <div class="card" style="margin-bottom:12px;">
+          <strong>${customerName}</strong>
+
+          <div class="rating" style="margin:6px 0;">
+            ${stars}
+          </div>
+
+          <p>${review.comment || 'No comment provided.'}</p>
+
+          <small class="text-muted">
+            ${new Date(review.createdAt).toLocaleDateString()}
+          </small>
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    console.error('Reviews load error:', err);
+    el.innerHTML = `<p class="error-text">Unable to load reviews.</p>`;
+  }
+}
 async function loadBookings() {
   try {
     myBookings = await apiRequest('/bookings/my');
@@ -349,4 +392,5 @@ async function loadBookings() {
   await loadCategoriesForProfile();
   await loadMyProvider();
   await loadBookings();
+  await loadProviderReviews();
 })();

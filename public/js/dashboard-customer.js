@@ -30,7 +30,11 @@ function renderBookings(filter) {
       </div>
       <div class="flex items-center" style="gap:10px;">
         <span class="status-pill status-${b.status}">${b.status.replace('_',' ')}</span>
-        ${b.status === 'completed' ? `<button class="btn btn-outline" data-review-id="${b._id}">Leave Review</button>` : ''}
+        ${b.status === 'completed'
+  ? (b.hasReview
+      ? `<span class="status-pill">Reviewed ✓</span>`
+      : `<button class="btn btn-outline" data-review-id="${b._id}">Leave Review</button>`)
+  : ''}
       </div>
     </div>
   `).join('');
@@ -57,20 +61,37 @@ document.getElementById('cancelReviewBtn').addEventListener('click', () => {
 });
 document.getElementById('submitReviewBtn').addEventListener('click', async () => {
   const errorEl = document.getElementById('reviewError');
+  const submitBtn = document.getElementById('submitReviewBtn');
+
+  // Prevent multiple clicks / duplicate requests
+  if (submitBtn.disabled) return;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+  errorEl.textContent = '';
+
   try {
     await apiRequest('/reviews', {
       method: 'POST',
       body: JSON.stringify({
         bookingId: activeBookingForReview,
         rating: Number(document.getElementById('reviewRating').value),
-        comment: document.getElementById('reviewComment').value
+        comment: document.getElementById('reviewComment').value.trim()
       })
     });
+
     document.getElementById('reviewModalOverlay').style.display = 'none';
-    loadBookings();
+
+    // Refresh bookings
+    await loadBookings();
+
   } catch (err) {
     errorEl.textContent = err.message;
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit';
   }
 });
-
-if (requireLogin()) loadBookings();
+if (requireLogin()) {
+  loadBookings();
+}
